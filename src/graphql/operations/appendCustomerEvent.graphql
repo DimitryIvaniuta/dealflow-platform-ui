@@ -1,0 +1,11 @@
+mutation AppendCustomerEvent($input: AppendCustomerEventInput!) {
+  appendCustomerEvent(input: $input) {
+    id
+    eventType
+    category
+    source
+    occurredAt
+    summary
+    payload
+  }
+}

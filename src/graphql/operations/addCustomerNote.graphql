@@ -1,0 +1,9 @@
+mutation AddCustomerNote($workspaceId: UUID!, $customerId: UUID!, $note: String!) {
+  addCustomerNote(workspaceId: $workspaceId, customerId: $customerId, note: $note) {
+    id
+    eventType
+    occurredAt
+    summary
+    payload
+  }
+}

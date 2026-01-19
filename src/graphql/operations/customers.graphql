@@ -1,0 +1,6 @@
+query Customers($workspaceId: UUID!, $filter: CustomerFilterInput, $page: Int!, $size: Int!) {
+  customers(workspaceId: $workspaceId, filter: $filter, page: $page, size: $size) {
+    items { id displayName email status }
+    pageInfo { page size totalElements totalPages hasNext hasPrevious }
+  }
+}
