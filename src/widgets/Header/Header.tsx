@@ -34,8 +34,8 @@ export function Header() {
           <Button
             variant="outlined"
             color="inherit"
-            onClick={() => {
-              logout();
+            onClick={async () => {
+              await logout();
               navigate('/login');
             }}
           >

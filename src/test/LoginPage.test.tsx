@@ -15,6 +15,8 @@ describe('LoginPage', () => {
     renderWithProviders(<LoginPage />);
     const user = userEvent.setup();
 
+    // switch to Dev token tab
+    await user.click(screen.getByRole('tab', { name: /dev token/i }));
     await user.type(screen.getByLabelText(/access token/i), 'a.b.c');
     await user.click(screen.getByRole('button', { name: /continue/i }));
 
@@ -26,6 +28,7 @@ describe('LoginPage', () => {
     renderWithProviders(<LoginPage />);
     const user = userEvent.setup();
 
+    await user.click(screen.getByRole('tab', { name: /dev token/i }));
     await user.click(screen.getByRole('button', { name: /clear/i }));
     expect(useAuthStore.getState().token).toBeNull();
   });

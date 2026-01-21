@@ -1,4 +1,4 @@
-import { createGraphqlClient } from '@/shared/api/graphqlClient';
+import { graphqlRequest } from '@/shared/api/graphqlRequest';
 
 export type CustomerEvent = {
   id: string;
@@ -32,7 +32,6 @@ export type CustomerTimelineFilterInput = {
 };
 
 export async function fetchCustomerTimeline(workspaceId: string, customerId: string, filter: CustomerTimelineFilterInput | null, page: number, size: number) {
-  const client = createGraphqlClient();
   const query = `
     query CustomerTimeline($workspaceId: UUID!, $customerId: UUID!, $filter: CustomerTimelineFilterInput, $page: Int!, $size: Int!) {
       customerTimeline(workspaceId: $workspaceId, customerId: $customerId, filter: $filter, page: $page, size: $size) {
@@ -41,12 +40,11 @@ export async function fetchCustomerTimeline(workspaceId: string, customerId: str
       }
     }
   `;
-  const res = await client.request<{ customerTimeline: CustomerEventConnection }>(query, { workspaceId, customerId, filter, page, size });
+  const res = await graphqlRequest<{ customerTimeline: CustomerEventConnection }>(query, { workspaceId, customerId, filter, page, size });
   return res.customerTimeline;
 }
 
 export async function addCustomerNote(workspaceId: string, customerId: string, note: string) {
-  const client = createGraphqlClient();
   const mutation = `
     mutation AddCustomerNote($workspaceId: UUID!, $customerId: UUID!, $note: String!) {
       addCustomerNote(workspaceId: $workspaceId, customerId: $customerId, note: $note) {
@@ -54,6 +52,6 @@ export async function addCustomerNote(workspaceId: string, customerId: string, n
       }
     }
   `;
-  const res = await client.request<{ addCustomerNote: CustomerEvent }>(mutation, { workspaceId, customerId, note });
+  const res = await graphqlRequest<{ addCustomerNote: CustomerEvent }>(mutation, { workspaceId, customerId, note });
   return res.addCustomerNote;
 }

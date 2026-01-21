@@ -1,0 +1,49 @@
+query Opportunities($workspaceId: UUID!, $filter: OpportunityFilterInput, $page: Int!, $size: Int!) {
+  opportunities(workspaceId: $workspaceId, filter: $filter, page: $page, size: $size) {
+    content {
+      id
+      title
+      amount
+      stage
+      expectedCloseDate
+      customer { id displayName }
+      owner { id displayName }
+    }
+    number
+    size
+    totalElements
+    totalPages
+  }
+}
+
+mutation CreateOpportunity($input: CreateOpportunityInput!) {
+  createOpportunity(input: $input) {
+    id
+    title
+    amount
+    stage
+    expectedCloseDate
+    customer { id displayName }
+    owner { id displayName }
+  }
+}
+
+mutation UpdateOpportunity($input: UpdateOpportunityInput!) {
+  updateOpportunity(input: $input) {
+    id
+    title
+    amount
+    stage
+    expectedCloseDate
+    customer { id displayName }
+    owner { id displayName }
+  }
+}
+
+mutation MoveOpportunityStage($input: MoveOpportunityStageInput!) {
+  moveOpportunityStage(input: $input) { id stage }
+}
+
+mutation DeleteOpportunity($input: DeleteOpportunityInput!) {
+  deleteOpportunity(input: $input) { id stage }
+}
