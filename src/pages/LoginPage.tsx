@@ -1,13 +1,64 @@
 import React from 'react';
-import { Box, Button, Card, CardContent, Container, TextField, Typography } from '@mui/material';
+import {
+  Alert,
+  Box,
+  Button,
+  Card,
+  CardContent,
+  Container,
+  Tab,
+  Tabs,
+  TextField,
+  Typography
+} from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import { useAuthStore } from '@/features/auth/authStore';
 
+type Mode = 'password' | 'devToken';
+
 export function LoginPage() {
   const navigate = useNavigate();
+  const login = useAuthStore((s) => s.login);
   const setToken = useAuthStore((s) => s.setToken);
-  const token = useAuthStore((s) => s.token);
-  const [value, setValue] = React.useState(token ?? '');
+
+  const [mode, setMode] = React.useState<Mode>('password');
+
+  const [username, setUsername] = React.useState('');
+  const [password, setPassword] = React.useState('');
+  const [devToken, setDevToken] = React.useState('');
+
+  const [loading, setLoading] = React.useState(false);
+  const [error, setError] = React.useState<string | null>(null);
+
+  async function onPasswordLogin() {
+    setError(null);
+    const u = username.trim();
+    const p = password;
+    if (!u || !p) {
+      setError('Username and password are required.');
+      return;
+    }
+    setLoading(true);
+    try {
+      await login(u, p);
+      navigate('/');
+    } catch (e: any) {
+      setError(e?.message ?? 'Login failed');
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  function onDevToken() {
+    setError(null);
+    const t = devToken.trim();
+    if (!t) {
+      setError('Access token is required.');
+      return;
+    }
+    setToken(t);
+    navigate('/');
+  }
 
   return (
     <Container maxWidth="sm" sx={{ py: 10 }}>
@@ -16,47 +67,79 @@ export function LoginPage() {
           <Typography variant="h5" sx={{ fontWeight: 700, mb: 1 }}>
             Login
           </Typography>
-          <Typography variant="body2" sx={{ color: 'rgba(255,255,255,0.65)', mb: 3 }}>
-            Paste your OAuth2/JWT access token. The app will send it as a Bearer token to /graphql.
+          <Typography variant="body2" sx={{ color: 'rgba(255,255,255,0.65)', mb: 2 }}>
+            Sign in with your Dealflow account. Dev token mode is available for local testing.
           </Typography>
 
-          <TextField
-            label="Access token"
-            multiline
-            minRows={6}
-            fullWidth
-            value={value}
-            onChange={(e) => setValue(e.target.value)}
-          />
+          <Tabs
+            value={mode}
+            onChange={(_, v) => {
+              setMode(v);
+              setError(null);
+            }}
+            sx={{ mb: 2 }}
+          >
+            <Tab value="password" label="Username + password" />
+            <Tab value="devToken" label="Dev token" />
+          </Tabs>
 
-          <Box sx={{ mt: 2, display: 'flex', gap: 1, justifyContent: 'flex-end' }}>
-            <Button
-              variant="outlined"
-              color="inherit"
-              onClick={() => {
-                setValue('');
-                setToken(null);
-              }}
-            >
-              Clear
-            </Button>
-            <Button
-              variant="contained"
-              onClick={() => {
-                const t = value.trim();
-                if (!t) return;
-                setToken(t);
-                navigate('/');
-              }}
-            >
-              Continue
-            </Button>
-          </Box>
+          {error ? (
+            <Alert severity="error" sx={{ mb: 2 }}>
+              {error}
+            </Alert>
+          ) : null}
+
+          {mode === 'password' ? (
+            <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+              <TextField
+                label="Username"
+                autoComplete="username"
+                value={username}
+                onChange={(e) => setUsername(e.target.value)}
+              />
+              <TextField
+                label="Password"
+                type="password"
+                autoComplete="current-password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter') void onPasswordLogin();
+                }}
+              />
+              <Box sx={{ display: 'flex', gap: 1, justifyContent: 'flex-end' }}>
+                <Button variant="contained" disabled={loading} onClick={() => void onPasswordLogin()}>
+                  {loading ? 'Signing in…' : 'Sign in'}
+                </Button>
+              </Box>
+            </Box>
+          ) : (
+            <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+              <Typography variant="body2" sx={{ color: 'rgba(255,255,255,0.65)' }}>
+                Paste a JWT access token (Bearer) for local testing.
+              </Typography>
+              <TextField
+                label="Access token"
+                multiline
+                minRows={6}
+                value={devToken}
+                onChange={(e) => setDevToken(e.target.value)}
+              />
+              <Box sx={{ display: 'flex', gap: 1, justifyContent: 'flex-end' }}>
+                <Button variant="outlined" color="inherit" onClick={() => setDevToken('')}>
+                  Clear
+                </Button>
+                <Button variant="contained" onClick={onDevToken}>
+                  Continue
+                </Button>
+              </Box>
+            </Box>
+          )}
         </CardContent>
       </Card>
 
       <Typography variant="caption" sx={{ display: 'block', mt: 2, color: 'rgba(255,255,255,0.6)' }}>
-        Tip: set VITE_API_BASE_URL in .env (e.g. http://localhost:8080). For schema download/codegen you can export DF_TOKEN.
+        Backend: set VITE_API_BASE_URL in .env (default: http://localhost:8080).
       </Typography>
     </Container>
   );

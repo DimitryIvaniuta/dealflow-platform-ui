@@ -1,4 +1,4 @@
-import { createGraphqlClient } from '@/shared/api/graphqlClient';
+import { graphqlRequest } from '@/shared/api/graphqlRequest';
 
 export type CustomerStatus = 'ACTIVE' | 'ARCHIVED' | 'PROSPECT' | string;
 
@@ -29,7 +29,6 @@ export type CustomerFilterInput = {
 };
 
 export async function fetchCustomers(workspaceId: string, filter: CustomerFilterInput | null, page: number, size: number) {
-  const client = createGraphqlClient();
   const query = `
     query Customers($workspaceId: UUID!, $filter: CustomerFilterInput, $page: Int!, $size: Int!) {
       customers(workspaceId: $workspaceId, filter: $filter, page: $page, size: $size) {
@@ -38,7 +37,7 @@ export async function fetchCustomers(workspaceId: string, filter: CustomerFilter
       }
     }
   `;
-  const res = await client.request<{ customers: CustomersConnection }>(query, { workspaceId, filter, page, size });
+  const res = await graphqlRequest<{ customers: CustomersConnection }>(query, { workspaceId, filter, page, size });
   return res.customers;
 }
 
@@ -50,12 +49,11 @@ export type CreateCustomerInput = {
 };
 
 export async function createCustomer(input: CreateCustomerInput) {
-  const client = createGraphqlClient();
   const mutation = `
     mutation CreateCustomer($input: CreateCustomerInput!) {
       createCustomer(input: $input) { id displayName email status }
     }
   `;
-  const res = await client.request<{ createCustomer: Customer }>(mutation, { input });
+  const res = await graphqlRequest<{ createCustomer: Customer }>(mutation, { input });
   return res.createCustomer;
 }

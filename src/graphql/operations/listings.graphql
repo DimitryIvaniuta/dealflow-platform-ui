@@ -1,0 +1,43 @@
+query Listings($workspaceId: UUID!, $filter: ListingFilterInput, $page: Int!, $size: Int!) {
+  listings(workspaceId: $workspaceId, filter: $filter, page: $page, size: $size) {
+    items {
+      id
+      title
+      city
+      askingPrice
+      status
+      customer { id displayName }
+    }
+    pageInfo { page size totalElements totalPages hasNext hasPrevious }
+  }
+}
+
+mutation CreateListing($input: CreateListingInput!) {
+  createListing(input: $input) {
+    id
+    title
+    city
+    askingPrice
+    status
+    customer { id displayName }
+  }
+}
+
+mutation UpdateListing($input: UpdateListingInput!) {
+  updateListing(input: $input) {
+    id
+    title
+    city
+    askingPrice
+    status
+    customer { id displayName }
+  }
+}
+
+mutation PublishListing($input: PublishListingInput!) {
+  publishListing(input: $input) { id status }
+}
+
+mutation DeleteListing($input: DeleteListingInput!) {
+  deleteListing(input: $input) { id status }
+}
