@@ -1,105 +1,75 @@
-import { graphqlRequest } from '@/shared/api/graphqlRequest';
+import { fetcher } from '@/shared/api/codegenFetcher';
+import {
+  ListingsDocument,
+  CreateListingDocument,
+  UpdateListingDocument,
+  DeleteListingDocument,
+  PublishListingDocument,
+  type ListingFieldsFragment,
+  type ListingsQuery,
+  type ListingsQueryVariables,
+  type CreateListingMutation,
+  type CreateListingMutationVariables,
+  type UpdateListingMutation,
+  type UpdateListingMutationVariables,
+  type DeleteListingMutation,
+  type DeleteListingMutationVariables,
+  type PublishListingMutation,
+  type PublishListingMutationVariables
+} from '@/graphql/generated';
 
-export type ListingStatus = 'DRAFT' | 'PUBLISHED' | 'ARCHIVED' | string;
+/**
+ * NOTE: this file contains **zero** hand-written GraphQL strings.
+ * Everything is generated from src/graphql/operations/** and the backend schema.
+ *
+ * Workflow:
+ *  1) npm run schema:download
+ *  2) npm run codegen
+ */
 
-export type Listing = {
-  id: string;
-  title: string;
-  city: string;
-  askingPrice: string; // BigDecimal as string
-  status: ListingStatus;
-  customer?: { id: string; displayName: string } | null;
-};
+export type ListingStatus = ListingFieldsFragment['status'] | string;
+export type Listing = ListingFieldsFragment;
+export type ListingConnection = ListingsQuery['listings'];
+export type PageInfo = ListingsQuery['listings']['pageInfo'];
+export type ListingFilterInput = ListingsQueryVariables['filter'];
+export type CreateListingInput = CreateListingMutationVariables['input'];
+export type UpdateListingInput = UpdateListingMutationVariables['input'];
 
-export type PageInfo = {
-  page: number;
-  size: number;
-  totalElements: number;
-  totalPages: number;
-  hasNext: boolean;
-  hasPrevious: boolean;
-};
-
-export type ListingConnection = {
-  items: Listing[];
-  pageInfo: PageInfo;
-};
-
-export type ListingFilterInput = {
-  city?: string | null;
-  status?: ListingStatus | null;
-  minPrice?: string | null;
-  maxPrice?: string | null;
-};
-
-export async function fetchListings(workspaceId: string, filter: ListingFilterInput | null, page: number, size: number) {
-  const query = `
-    query Listings($workspaceId: UUID!, $filter: ListingFilterInput, $page: Int!, $size: Int!) {
-      listings(workspaceId: $workspaceId, filter: $filter, page: $page, size: $size) {
-        items { id title city askingPrice status customer { id displayName } }
-        pageInfo { page size totalElements totalPages hasNext hasPrevious }
-      }
-    }
-  `;
-  const res = await graphqlRequest<{ listings: ListingConnection }>(query, { workspaceId, filter, page, size });
-  return res.listings;
+export async function fetchListings(
+  workspaceId: string,
+  filter: ListingFilterInput | null,
+  page: number,
+  size: number
+): Promise<ListingConnection> {
+  const data = await fetcher<ListingsQuery, ListingsQueryVariables>(ListingsDocument, {
+    workspaceId,
+    filter,
+    page,
+    size
+  });
+  return data.listings;
 }
 
-export type CreateListingInput = {
-  workspaceId: string;
-  title: string;
-  city: string;
-  askingPrice: string;
-  customerId?: string | null;
-};
-
-export async function createListing(input: CreateListingInput) {
-  const mutation = `
-    mutation CreateListing($input: CreateListingInput!) {
-      createListing(input: $input) { id title city askingPrice status customer { id displayName } }
-    }
-  `;
-  const res = await graphqlRequest<{ createListing: Listing }>(mutation, { input });
-  return res.createListing;
+export async function createListing(input: CreateListingInput): Promise<Listing> {
+  const data = await fetcher<CreateListingMutation, CreateListingMutationVariables>(CreateListingDocument, { input });
+  return data.createListing;
 }
 
-export type UpdateListingInput = {
-  workspaceId: string;
-  listingId: string;
-  title?: string | null;
-  city?: string | null;
-  askingPrice?: string | null;
-  status?: ListingStatus | null;
-  customerId?: string | null;
-  clearCustomer?: boolean | null;
-};
-
-export async function updateListing(input: UpdateListingInput) {
-  const mutation = `
-    mutation UpdateListing($input: UpdateListingInput!) {
-      updateListing(input: $input) { id title city askingPrice status customer { id displayName } }
-    }
-  `;
-  const res = await graphqlRequest<{ updateListing: Listing }>(mutation, { input });
-  return res.updateListing;
+export async function updateListing(input: UpdateListingInput): Promise<Listing> {
+  const data = await fetcher<UpdateListingMutation, UpdateListingMutationVariables>(UpdateListingDocument, { input });
+  return data.updateListing;
 }
 
-export async function deleteListing(workspaceId: string, listingId: string) {
-  const mutation = `
-    mutation DeleteListing($input: DeleteListingInput!) {
-      deleteListing(input: $input) { id status }
-    }
-  `;
-  const res = await graphqlRequest<{ deleteListing: Listing }>(mutation, { input: { workspaceId, listingId } });
-  return res.deleteListing;
+export async function deleteListing(workspaceId: string, listingId: string): Promise<Listing> {
+  const data = await fetcher<DeleteListingMutation, DeleteListingMutationVariables>(DeleteListingDocument, {
+    input: { workspaceId, listingId }
+  });
+  return data.deleteListing;
 }
 
-export async function publishListing(workspaceId: string, listingId: string) {
-  const mutation = `
-    mutation PublishListing($input: PublishListingInput!) {
-      publishListing(input: $input) { id status }
-    }
-  `;
-  const res = await graphqlRequest<{ publishListing: Listing }>(mutation, { input: { workspaceId, listingId } });
-  return res.publishListing;
+export async function publishListing(workspaceId: string, listingId: string): Promise<Listing> {
+  const data = await fetcher<PublishListingMutation, PublishListingMutationVariables>(PublishListingDocument, {
+    input: { workspaceId, listingId }
+  });
+  return data.publishListing;
 }

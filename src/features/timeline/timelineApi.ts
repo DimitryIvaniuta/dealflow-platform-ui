@@ -1,57 +1,51 @@
-import { graphqlRequest } from '@/shared/api/graphqlRequest';
+import { fetcher } from '@/shared/api/codegenFetcher';
+import {
+  CustomerTimelineDocument,
+  AddCustomerNoteDocument,
+  AppendCustomerEventDocument,
+  type CustomerTimelineQuery,
+  type CustomerTimelineQueryVariables,
+  type AddCustomerNoteMutation,
+  type AddCustomerNoteMutationVariables,
+  type AppendCustomerEventMutation,
+  type AppendCustomerEventMutationVariables
+} from '@/graphql/generated';
 
-export type CustomerEvent = {
-  id: string;
-  eventType: string;
-  category: string;
-  source: string;
-  occurredAt: string;
-  actorSubject: string;
-  summary: string;
-  payload: unknown;
-};
+export type CustomerEvent = CustomerTimelineQuery['customerTimeline']['items'][number];
+export type CustomerEventConnection = CustomerTimelineQuery['customerTimeline'];
+export type PageInfo = CustomerTimelineQuery['customerTimeline']['pageInfo'];
+export type CustomerTimelineFilterInput = CustomerTimelineQueryVariables['filter'];
 
-export type PageInfo = {
-  page: number;
-  size: number;
-  totalElements: number;
-  totalPages: number;
-  hasNext: boolean;
-  hasPrevious: boolean;
-};
-
-export type CustomerEventConnection = {
-  items: CustomerEvent[];
-  pageInfo: PageInfo;
-};
-
-export type CustomerTimelineFilterInput = {
-  types?: string[] | null;
-  categories?: string[] | null;
-  text?: string | null;
-};
-
-export async function fetchCustomerTimeline(workspaceId: string, customerId: string, filter: CustomerTimelineFilterInput | null, page: number, size: number) {
-  const query = `
-    query CustomerTimeline($workspaceId: UUID!, $customerId: UUID!, $filter: CustomerTimelineFilterInput, $page: Int!, $size: Int!) {
-      customerTimeline(workspaceId: $workspaceId, customerId: $customerId, filter: $filter, page: $page, size: $size) {
-        items { id eventType category source occurredAt actorSubject summary payload }
-        pageInfo { page size totalElements totalPages hasNext hasPrevious }
-      }
-    }
-  `;
-  const res = await graphqlRequest<{ customerTimeline: CustomerEventConnection }>(query, { workspaceId, customerId, filter, page, size });
-  return res.customerTimeline;
+export async function fetchCustomerTimeline(
+  workspaceId: string,
+  customerId: string,
+  filter: CustomerTimelineFilterInput | null,
+  page: number,
+  size: number
+): Promise<CustomerEventConnection> {
+  const data = await fetcher<CustomerTimelineQuery, CustomerTimelineQueryVariables>(CustomerTimelineDocument, {
+    workspaceId,
+    customerId,
+    filter,
+    page,
+    size
+  });
+  return data.customerTimeline;
 }
 
-export async function addCustomerNote(workspaceId: string, customerId: string, note: string) {
-  const mutation = `
-    mutation AddCustomerNote($workspaceId: UUID!, $customerId: UUID!, $note: String!) {
-      addCustomerNote(workspaceId: $workspaceId, customerId: $customerId, note: $note) {
-        id eventType occurredAt summary payload
-      }
-    }
-  `;
-  const res = await graphqlRequest<{ addCustomerNote: CustomerEvent }>(mutation, { workspaceId, customerId, note });
-  return res.addCustomerNote;
+export async function addCustomerNote(workspaceId: string, customerId: string, note: string): Promise<CustomerEvent> {
+  const data = await fetcher<AddCustomerNoteMutation, AddCustomerNoteMutationVariables>(AddCustomerNoteDocument, {
+    workspaceId,
+    customerId,
+    note
+  });
+  return data.addCustomerNote;
+}
+
+export async function appendCustomerEvent(input: AppendCustomerEventMutationVariables['input']): Promise<CustomerEvent> {
+  const data = await fetcher<AppendCustomerEventMutation, AppendCustomerEventMutationVariables>(
+    AppendCustomerEventDocument,
+    { input }
+  );
+  return data.appendCustomerEvent;
 }
