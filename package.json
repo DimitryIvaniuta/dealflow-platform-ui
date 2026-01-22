@@ -10,8 +10,10 @@
     "lint": "eslint .",
     "test": "vitest run",
     "test:watch": "vitest",
+    "schema:download": "node scripts/download-schema.mjs",
+    "ops:generate": "node scripts/generate-operations.mjs",
     "codegen": "graphql-codegen --config codegen.ts",
-    "schema:download": "node scripts/download-schema.mjs"
+    "codegen:full": "npm run schema:download && npm run ops:generate && npm run codegen"
   },
   "dependencies": {
     "@emotion/react": "^11.11.4",
@@ -45,6 +47,7 @@
     "@types/react-dom": "^19.0.2",
     "@vitejs/plugin-react": "^4.3.3",
     "autoprefixer": "^10.4.20",
+    "dotenv": "^17.2.3",
     "eslint": "^9.17.0",
     "eslint-plugin-react-hooks": "^5.1.0",
     "eslint-plugin-react-refresh": "^0.4.16",

@@ -1,0 +1,428 @@
+""""""
+input AppendCustomerEventInputInput {
+  category: CustomerEventCategory
+  customerId: UUID
+  eventType: CustomerEventType
+  listingId: UUID
+  noTime: Boolean
+  occurredAt: Instant
+  opportunityId: UUID
+  payload: Json
+  source: CustomerEventSource
+  summary: String
+  transactionId: UUID
+  workspaceId: UUID
+}
+
+""""""
+input AuthenticationInput {
+  authenticated: Boolean!
+}
+
+"""An arbitrary precision signed decimal"""
+scalar BigDecimal
+
+""""""
+input CreateCustomerInputInput {
+  displayName: String
+  email: String
+  externalRef: String
+  ownerMemberId: UUID
+  phone: String
+  workspaceId: UUID
+}
+
+""""""
+input CreateListingInputInput {
+  askingPrice: BigDecimal
+  city: String
+  customerId: UUID
+  status: ListingStatus!
+  title: String
+  workspaceId: UUID
+}
+
+""""""
+input CreateOpportunityInputInput {
+  amount: BigDecimal
+  customerId: UUID
+  expectedCloseDate: LocalDate
+  ownerMemberId: UUID
+  title: String
+  workspaceId: UUID
+}
+
+""""""
+type Customer {
+  displayName: String
+  email: String
+  externalRef: String
+  id: UUID
+  normalizedName: String
+  owner: WorkspaceMember
+  phone: String
+  status: CustomerStatus
+  workspace: Workspace
+}
+
+""""""
+type CustomerConnection {
+  items: [Customer]
+  pageInfo: PageInfo
+}
+
+""""""
+type CustomerEvent {
+  actorSubject: String
+  category: CustomerEventCategory
+  customer: Customer
+  eventType: CustomerEventType
+  id: UUID
+  listingId: UUID
+  noTime: Boolean!
+  occurredAt: Instant
+  opportunityId: UUID
+  payload: Json
+  source: CustomerEventSource
+  summary: String
+  transactionId: UUID
+  workspaceId: UUID
+}
+
+""""""
+enum CustomerEventCategory {
+  COMMUNICATION
+  DEAL
+  LISTINGS
+  PIPELINE
+  RELATIONSHIP
+  SYSTEM
+  TASKS
+}
+
+""""""
+type CustomerEventConnection {
+  items: [CustomerEvent]
+  pageInfo: PageInfo
+}
+
+""""""
+enum CustomerEventSource {
+  INTEGRATION
+  MANUAL
+  SYSTEM
+}
+
+""""""
+enum CustomerEventType {
+  CONTACT_ADDED
+  CONTACT_UPDATED
+  EMAIL_RECEIVED
+  EMAIL_SENT
+  LISTING_SHARED
+  NOTE_ADDED
+  STATUS_CHANGED
+  TASK_COMPLETED
+  TASK_CREATED
+  TRANSACTION_ACCEPTED
+  TRANSACTION_REJECTED
+}
+
+""""""
+input CustomerFilterInputInput {
+  ownerMemberId: UUID
+  status: CustomerStatus
+  text: String
+}
+
+""""""
+enum CustomerStatus {
+  ACTIVE
+  ARCHIVED
+  BLOCKED
+  NEW
+  QUALIFIED
+}
+
+""""""
+input CustomerTimelineFilterInputInput {
+  categories: [CustomerEventCategory]
+  from: Instant
+  listingId: UUID
+  opportunityId: UUID
+  sources: [CustomerEventSource]
+  text: String
+  to: Instant
+  transactionId: UUID
+  types: [CustomerEventType]
+}
+
+""""""
+input DeleteListingInputInput {
+  listingId: UUID
+  workspaceId: UUID
+}
+
+""""""
+input DeleteOpportunityInputInput {
+  opportunityId: UUID
+  workspaceId: UUID
+}
+
+""""""
+enum Direction {
+  ASC
+  DESC
+}
+
+"""Built-in scalar representing an instant in time"""
+scalar Instant
+
+"""Any JSON value"""
+scalar Json
+
+""""""
+type Listing {
+  askingPrice: BigDecimal
+  city: String
+  cityNormalized: String
+  customer: Customer
+  id: UUID
+  status: ListingStatus
+  title: String
+  workspace: Workspace
+}
+
+""""""
+type ListingConnection {
+  items: [Listing]
+  pageInfo: PageInfo
+}
+
+""""""
+input ListingFilterInputInput {
+  city: String
+  maxPrice: BigDecimal
+  minPrice: BigDecimal
+  status: ListingStatus
+}
+
+""""""
+enum ListingStatus {
+  ARCHIVED
+  CLOSED
+  DRAFT
+  PUBLISHED
+  UNDER_OFFER
+}
+
+"""Built-in scalar representing a local date"""
+scalar LocalDate
+
+"""A 64-bit signed integer"""
+scalar Long
+
+""""""
+enum MemberStatus {
+  ACTIVE
+  DISABLED
+  INVITED
+}
+
+""""""
+input MoveOpportunityStageInputInput {
+  opportunityId: UUID
+  stage: OpportunityStage
+  workspaceId: UUID
+}
+
+"""Mutation root"""
+type Mutation {
+  createCustomer(input: CreateCustomerInputInput): Customer
+  updateOpportunity(input: UpdateOpportunityInputInput): Opportunity
+  recordEmailSent(auth: AuthenticationInput, subject: String, customerId: UUID, to: String, templateKey: String, workspaceId: UUID): CustomerEvent
+  createOpportunity(input: CreateOpportunityInputInput): Opportunity
+  recordTaskCompleted(auth: AuthenticationInput, customerId: UUID, taskTitle: String, taskId: String, workspaceId: UUID): CustomerEvent
+  updateCustomerStatus(input: UpdateCustomerStatusInputInput): Customer
+  recordContactAdded(auth: AuthenticationInput, contactEmail: String, contactName: String, customerId: UUID, contactPhone: String, workspaceId: UUID): CustomerEvent
+  appendCustomerEvent(input: AppendCustomerEventInputInput, auth: AuthenticationInput): CustomerEvent
+  updateListing(input: UpdateListingInputInput): Listing
+  addCustomerNote(note: String, auth: AuthenticationInput, customerId: UUID, workspaceId: UUID): CustomerEvent
+  recordTransactionAccepted(amount: String, auth: AuthenticationInput, customerId: UUID, currency: String, transactionId: UUID, workspaceId: UUID): CustomerEvent
+  moveOpportunityStage(input: MoveOpportunityStageInputInput): Opportunity
+  createListing(input: CreateListingInputInput): Listing
+  publishListing(input: PublishListingInputInput): Listing
+  deleteOpportunity(input: DeleteOpportunityInputInput): Opportunity
+  deleteListing(input: DeleteListingInputInput): Listing
+}
+
+""""""
+enum NullHandling {
+  NATIVE
+  NULLS_FIRST
+  NULLS_LAST
+}
+
+""""""
+type Opportunity {
+  amount: BigDecimal
+  customer: Customer
+  expectedCloseDate: LocalDate
+  id: UUID
+  owner: WorkspaceMember
+  stage: OpportunityStage
+  title: String
+  workspace: Workspace
+}
+
+""""""
+input OpportunityFilterInputInput {
+  maxAmount: BigDecimal
+  minAmount: BigDecimal
+  ownerMemberId: UUID
+  stage: OpportunityStage
+}
+
+""""""
+enum OpportunityStage {
+  ARCHIVED
+  DISCOVERY
+  INTAKE
+  LOST
+  NEGOTIATION
+  PROPOSAL
+  WON
+}
+
+""""""
+type Order {
+  direction: Direction
+  ignoreCase: Boolean
+  nullHandlingHint: NullHandling
+  property: String!
+}
+
+""""""
+type PageInfo {
+  hasNext: Boolean!
+  hasPrevious: Boolean!
+  page: Int!
+  size: Int!
+  totalElements: Long!
+  totalPages: Int!
+}
+
+""""""
+type Page_Opportunity {
+  content: [Opportunity]
+  first: Boolean!
+  hasContent: Boolean!
+  hasNext: Boolean!
+  hasPrevious: Boolean!
+  last: Boolean!
+  nextOrLastPageable: Pagination
+  nextPageable: Pagination
+  number: Int!
+  numberOfElements: Int!
+  pageable: Pagination
+  previousOrFirstPageable: Pagination
+  previousPageable: Pagination
+  size: Int!
+  sort: Sorting
+  totalElements: Long!
+  totalPages: Int!
+}
+
+""""""
+type Pagination {
+  pageNumber: Int!
+  pageSize: Int
+  sort: Sort
+}
+
+""""""
+input PublishListingInputInput {
+  listingId: UUID
+  workspaceId: UUID
+}
+
+"""Query root"""
+type Query {
+  listings(filter: ListingFilterInputInput, size: Int!, page: Int!, workspaceId: UUID): ListingConnection
+  customerTimeline(filter: CustomerTimelineFilterInputInput, size: Int!, customerId: UUID, page: Int!, workspaceId: UUID): CustomerEventConnection
+  opportunity(opportunityId: UUID, workspaceId: UUID): Opportunity
+  customers(filter: CustomerFilterInputInput, size: Int!, page: Int!, workspaceId: UUID): CustomerConnection
+  listing(listingId: UUID, workspaceId: UUID): Listing
+  opportunities(filter: OpportunityFilterInputInput, size: Int!, page: Int!, workspaceId: UUID): Page_Opportunity
+}
+
+""""""
+type Sort {
+  orders: [Order!]!
+}
+
+""""""
+type Sorting {
+  orders: [Order!]!
+}
+
+"""UUID String"""
+scalar UUID
+
+""""""
+input UpdateCustomerStatusInputInput {
+  customerId: UUID
+  status: CustomerStatus
+  workspaceId: UUID
+}
+
+""""""
+input UpdateListingInputInput {
+  askingPrice: BigDecimal
+  city: String
+  clearCustomer: Boolean
+  customerId: UUID
+  listingId: UUID
+  status: ListingStatus
+  title: String
+  workspaceId: UUID
+}
+
+""""""
+input UpdateOpportunityInputInput {
+  amount: BigDecimal
+  clearCustomer: Boolean
+  clearOwner: Boolean
+  customerId: UUID
+  expectedCloseDate: LocalDate
+  opportunityId: UUID
+  ownerMemberId: UUID
+  stage: OpportunityStage
+  title: String
+  workspaceId: UUID
+}
+
+""""""
+type Workspace {
+  displayName: String
+  id: UUID
+  slug: String
+  status: WorkspaceStatus
+}
+
+""""""
+type WorkspaceMember {
+  displayName: String
+  email: String
+  id: UUID
+  status: MemberStatus
+  subject: String
+  workspace: Workspace
+}
+
+""""""
+enum WorkspaceStatus {
+  ACTIVE
+  CLOSED
+  SUSPENDED
+}
