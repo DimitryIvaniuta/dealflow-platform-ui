@@ -1,6 +1,6 @@
-query CustomerTimeline($workspaceId: UUID!, $customerId: UUID!, $filter: CustomerTimelineFilterInput, $page: Int!, $size: Int!) {
+query CustomerTimeline($workspaceId: UUID!, $customerId: UUID!, $filter: CustomerTimelineFilterInputInput, $page: Int!, $size: Int!) {
   customerTimeline(workspaceId: $workspaceId, customerId: $customerId, filter: $filter, page: $page, size: $size) {
     items { id eventType category source occurredAt actorSubject summary payload }
-    pageInfo { page size totalElements totalPages hasNext hasPrevious }
+    pageInfo { ...PageInfoFields }
   }
 }

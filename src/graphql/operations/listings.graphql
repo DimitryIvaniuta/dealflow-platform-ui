@@ -1,43 +1,28 @@
-query Listings($workspaceId: UUID!, $filter: ListingFilterInput, $page: Int!, $size: Int!) {
+query Listings($workspaceId: UUID!, $filter: ListingFilterInputInput, $page: Int!, $size: Int!) {
   listings(workspaceId: $workspaceId, filter: $filter, page: $page, size: $size) {
     items {
-      id
-      title
-      city
-      askingPrice
-      status
-      customer { id displayName }
+      ...ListingFields
     }
-    pageInfo { page size totalElements totalPages hasNext hasPrevious }
+    pageInfo { ...PageInfoFields }
   }
 }
 
-mutation CreateListing($input: CreateListingInput!) {
+mutation CreateListing($input: CreateListingInputInput!) {
   createListing(input: $input) {
-    id
-    title
-    city
-    askingPrice
-    status
-    customer { id displayName }
+    ...ListingFields
   }
 }
 
-mutation UpdateListing($input: UpdateListingInput!) {
+mutation UpdateListing($input: UpdateListingInputInput!) {
   updateListing(input: $input) {
-    id
-    title
-    city
-    askingPrice
-    status
-    customer { id displayName }
+    ...ListingFields
   }
 }
 
-mutation PublishListing($input: PublishListingInput!) {
+mutation PublishListing($input: PublishListingInputInput!) {
   publishListing(input: $input) { id status }
 }
 
-mutation DeleteListing($input: DeleteListingInput!) {
+mutation DeleteListing($input: DeleteListingInputInput!) {
   deleteListing(input: $input) { id status }
 }

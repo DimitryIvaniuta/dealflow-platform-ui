@@ -1,8 +1,5 @@
-mutation CreateCustomer($input: CreateCustomerInput!) {
+mutation CreateCustomer($input: CreateCustomerInputInput!) {
   createCustomer(input: $input) {
-    id
-    displayName
-    email
-    status
+    ...CustomerFields
   }
 }

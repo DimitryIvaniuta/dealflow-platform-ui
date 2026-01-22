@@ -1,0 +1,4 @@
+fragment CustomerMiniFields on Customer {
+  id
+  displayName
+}

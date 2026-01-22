@@ -1,0 +1,12 @@
+mutation AutoMoveOpportunityStage($input: MoveOpportunityStageInputInput) {
+  moveOpportunityStage(input: $input) {
+  amount
+  customer { id displayName email }
+  expectedCloseDate
+  id
+  owner { id displayName email }
+  stage
+  title
+  workspace { id displayName status }
+}
+}

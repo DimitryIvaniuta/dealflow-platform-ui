@@ -1,0 +1,12 @@
+query AutoListing($listingId: UUID, $workspaceId: UUID) {
+  listing(listingId: $listingId, workspaceId: $workspaceId) {
+  askingPrice
+  city
+  cityNormalized
+  customer { id displayName email }
+  id
+  status
+  title
+  workspace { id displayName status }
+}
+}

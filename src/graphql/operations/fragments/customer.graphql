@@ -1,0 +1,6 @@
+fragment CustomerFields on Customer {
+  id
+  displayName
+  email
+  status
+}

@@ -1,0 +1,13 @@
+mutation AutoCreateCustomer($input: CreateCustomerInputInput) {
+  createCustomer(input: $input) {
+  displayName
+  email
+  externalRef
+  id
+  normalizedName
+  owner { id displayName email }
+  phone
+  status
+  workspace { id displayName status }
+}
+}

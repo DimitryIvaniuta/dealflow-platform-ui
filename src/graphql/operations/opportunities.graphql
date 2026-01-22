@@ -1,4 +1,4 @@
-query Opportunities($workspaceId: UUID!, $filter: OpportunityFilterInput, $page: Int!, $size: Int!) {
+query Opportunities($workspaceId: UUID!, $filter: OpportunityFilterInputInput, $page: Int!, $size: Int!) {
   opportunities(workspaceId: $workspaceId, filter: $filter, page: $page, size: $size) {
     content {
       id
@@ -16,7 +16,7 @@ query Opportunities($workspaceId: UUID!, $filter: OpportunityFilterInput, $page:
   }
 }
 
-mutation CreateOpportunity($input: CreateOpportunityInput!) {
+mutation CreateOpportunity($input: CreateOpportunityInputInput!) {
   createOpportunity(input: $input) {
     id
     title
@@ -28,7 +28,7 @@ mutation CreateOpportunity($input: CreateOpportunityInput!) {
   }
 }
 
-mutation UpdateOpportunity($input: UpdateOpportunityInput!) {
+mutation UpdateOpportunity($input: UpdateOpportunityInputInput!) {
   updateOpportunity(input: $input) {
     id
     title
@@ -40,10 +40,10 @@ mutation UpdateOpportunity($input: UpdateOpportunityInput!) {
   }
 }
 
-mutation MoveOpportunityStage($input: MoveOpportunityStageInput!) {
+mutation MoveOpportunityStage($input: MoveOpportunityStageInputInput!) {
   moveOpportunityStage(input: $input) { id stage }
 }
 
-mutation DeleteOpportunity($input: DeleteOpportunityInput!) {
+mutation DeleteOpportunity($input: DeleteOpportunityInputInput!) {
   deleteOpportunity(input: $input) { id stage }
 }

@@ -1,0 +1,5 @@
+query AutoCustomerTimeline($filter: CustomerTimelineFilterInputInput, $size: Int!, $customerId: UUID, $page: Int!, $workspaceId: UUID) {
+  customerTimeline(filter: $filter, size: $size, customerId: $customerId, page: $page, workspaceId: $workspaceId) {
+  items { id }
+}
+}

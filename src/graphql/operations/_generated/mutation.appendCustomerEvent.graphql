@@ -1,0 +1,18 @@
+mutation AutoAppendCustomerEvent($input: AppendCustomerEventInputInput, $auth: AuthenticationInput) {
+  appendCustomerEvent(input: $input, auth: $auth) {
+  actorSubject
+  category
+  customer { id displayName email }
+  eventType
+  id
+  listingId
+  noTime
+  occurredAt
+  opportunityId
+  payload
+  source
+  summary
+  transactionId
+  workspaceId
+}
+}

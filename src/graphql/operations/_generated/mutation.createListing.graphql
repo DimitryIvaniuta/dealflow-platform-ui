@@ -1,0 +1,12 @@
+mutation AutoCreateListing($input: CreateListingInputInput) {
+  createListing(input: $input) {
+  askingPrice
+  city
+  cityNormalized
+  customer { id displayName email }
+  id
+  status
+  title
+  workspace { id displayName status }
+}
+}

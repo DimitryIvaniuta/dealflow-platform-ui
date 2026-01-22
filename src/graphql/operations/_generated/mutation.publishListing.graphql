@@ -1,0 +1,12 @@
+mutation AutoPublishListing($input: PublishListingInputInput) {
+  publishListing(input: $input) {
+  askingPrice
+  city
+  cityNormalized
+  customer { id displayName email }
+  id
+  status
+  title
+  workspace { id displayName status }
+}
+}

@@ -1,0 +1,12 @@
+mutation AutoDeleteListing($input: DeleteListingInputInput) {
+  deleteListing(input: $input) {
+  askingPrice
+  city
+  cityNormalized
+  customer { id displayName email }
+  id
+  status
+  title
+  workspace { id displayName status }
+}
+}

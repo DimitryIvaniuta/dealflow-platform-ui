@@ -1,0 +1,18 @@
+mutation AutoRecordTaskCompleted($auth: AuthenticationInput, $customerId: UUID, $taskTitle: String, $taskId: String, $workspaceId: UUID) {
+  recordTaskCompleted(auth: $auth, customerId: $customerId, taskTitle: $taskTitle, taskId: $taskId, workspaceId: $workspaceId) {
+  actorSubject
+  category
+  customer { id displayName email }
+  eventType
+  id
+  listingId
+  noTime
+  occurredAt
+  opportunityId
+  payload
+  source
+  summary
+  transactionId
+  workspaceId
+}
+}

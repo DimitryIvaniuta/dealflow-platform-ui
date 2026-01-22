@@ -1,0 +1,15 @@
+query AutoOpportunities($filter: OpportunityFilterInputInput, $size: Int!, $page: Int!, $workspaceId: UUID) {
+  opportunities(filter: $filter, size: $size, page: $page, workspaceId: $workspaceId) {
+  content { id title stage }
+  first
+  hasContent
+  hasNext
+  hasPrevious
+  last
+  number
+  numberOfElements
+  size
+  totalElements
+  totalPages
+}
+}

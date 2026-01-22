@@ -1,0 +1,12 @@
+query AutoOpportunity($opportunityId: UUID, $workspaceId: UUID) {
+  opportunity(opportunityId: $opportunityId, workspaceId: $workspaceId) {
+  amount
+  customer { id displayName email }
+  expectedCloseDate
+  id
+  owner { id displayName email }
+  stage
+  title
+  workspace { id displayName status }
+}
+}

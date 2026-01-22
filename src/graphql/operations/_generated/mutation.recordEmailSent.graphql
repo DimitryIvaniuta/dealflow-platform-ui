@@ -1,0 +1,18 @@
+mutation AutoRecordEmailSent($auth: AuthenticationInput, $subject: String, $customerId: UUID, $to: String, $templateKey: String, $workspaceId: UUID) {
+  recordEmailSent(auth: $auth, subject: $subject, customerId: $customerId, to: $to, templateKey: $templateKey, workspaceId: $workspaceId) {
+  actorSubject
+  category
+  customer { id displayName email }
+  eventType
+  id
+  listingId
+  noTime
+  occurredAt
+  opportunityId
+  payload
+  source
+  summary
+  transactionId
+  workspaceId
+}
+}

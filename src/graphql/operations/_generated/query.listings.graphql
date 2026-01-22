@@ -1,0 +1,5 @@
+query AutoListings($filter: ListingFilterInputInput, $size: Int!, $page: Int!, $workspaceId: UUID) {
+  listings(filter: $filter, size: $size, page: $page, workspaceId: $workspaceId) {
+  items { id title status }
+}
+}

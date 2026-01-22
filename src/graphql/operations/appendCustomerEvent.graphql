@@ -1,4 +1,4 @@
-mutation AppendCustomerEvent($input: AppendCustomerEventInput!) {
+mutation AppendCustomerEvent($input: AppendCustomerEventInputInput!) {
   appendCustomerEvent(input: $input) {
     id
     eventType

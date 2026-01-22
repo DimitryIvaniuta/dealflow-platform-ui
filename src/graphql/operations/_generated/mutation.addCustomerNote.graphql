@@ -1,0 +1,18 @@
+mutation AutoAddCustomerNote($note: String, $auth: AuthenticationInput, $customerId: UUID, $workspaceId: UUID) {
+  addCustomerNote(note: $note, auth: $auth, customerId: $customerId, workspaceId: $workspaceId) {
+  actorSubject
+  category
+  customer { id displayName email }
+  eventType
+  id
+  listingId
+  noTime
+  occurredAt
+  opportunityId
+  payload
+  source
+  summary
+  transactionId
+  workspaceId
+}
+}

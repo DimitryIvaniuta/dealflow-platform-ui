@@ -1,0 +1,18 @@
+mutation AutoRecordTransactionAccepted($amount: String, $auth: AuthenticationInput, $customerId: UUID, $currency: String, $transactionId: UUID, $workspaceId: UUID) {
+  recordTransactionAccepted(amount: $amount, auth: $auth, customerId: $customerId, currency: $currency, transactionId: $transactionId, workspaceId: $workspaceId) {
+  actorSubject
+  category
+  customer { id displayName email }
+  eventType
+  id
+  listingId
+  noTime
+  occurredAt
+  opportunityId
+  payload
+  source
+  summary
+  transactionId
+  workspaceId
+}
+}

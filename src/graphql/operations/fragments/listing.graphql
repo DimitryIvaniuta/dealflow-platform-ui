@@ -1,0 +1,8 @@
+fragment ListingFields on Listing {
+  id
+  title
+  city
+  askingPrice
+  status
+  customer { ...CustomerMiniFields }
+}

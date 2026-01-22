@@ -1,0 +1,18 @@
+mutation AutoRecordContactAdded($auth: AuthenticationInput, $contactEmail: String, $contactName: String, $customerId: UUID, $contactPhone: String, $workspaceId: UUID) {
+  recordContactAdded(auth: $auth, contactEmail: $contactEmail, contactName: $contactName, customerId: $customerId, contactPhone: $contactPhone, workspaceId: $workspaceId) {
+  actorSubject
+  category
+  customer { id displayName email }
+  eventType
+  id
+  listingId
+  noTime
+  occurredAt
+  opportunityId
+  payload
+  source
+  summary
+  transactionId
+  workspaceId
+}
+}
